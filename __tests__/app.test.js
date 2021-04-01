@@ -20,11 +20,14 @@ describe('03_separation-of-concerns-demo routes', () => {
   it('creates a new order in our database and sends a text message', () => {
     return request(app)
       .post('/api/v1/orders')
-      .send({ quantity: 10 })
+      .send({ itemId: 5, itemName: 'star', itemPrice: 15, quantity: 10 })
       .then(res => {
         // expect(createMessage).toHaveBeenCalledTimes(1);
         expect(res.body).toEqual({
           id: '1',
+          itemId: '5',
+          itemName: 'star',
+          itemPrice: 15,
           quantity: 10
         });
       });
