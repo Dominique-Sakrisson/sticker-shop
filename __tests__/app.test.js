@@ -9,9 +9,7 @@ jest.mock('twilio', () => () => ({
   }
 }));
 
-jest.mock('s3', () =>{
-
-})
+jest.mock('../lib/utils/amazonS3.js');
 
 describe('03_separation-of-concerns-demo routes', () => {
   beforeAll(() => {
@@ -26,7 +24,7 @@ describe('03_separation-of-concerns-demo routes', () => {
       .post('/api/v1/orders')
       .send({ itemId: 5, itemName: 'star', itemPrice: 15, quantity: 10 })
       .then(res => {
-        // expect(createMessage).toHaveBeenCalledTimes(1);
+        
         expect(res.body).toEqual({
           id: '1',
           itemId: '5',
@@ -43,6 +41,9 @@ describe('03_separation-of-concerns-demo routes', () => {
       .send({ quantity: 5 });
     expect(res.body).toEqual({
       id: '2',
+      itemId: null,
+      itemName: null,
+      itemPrice: null,
       quantity: 5,
     });
   });
@@ -51,7 +52,9 @@ describe('03_separation-of-concerns-demo routes', () => {
     return request(app)
       .get('/api/v1/orders')
       .then(res => {
-        expect(res.body).toEqual([{ id: '1', quantity: 10 }, { id: '2', quantity: 5 }]);
+        expect(res.body).toEqual([
+          { id: '1', itemId: '5', itemName: 'star', itemPrice : 15, quantity: 10 },
+          { id: '2', itemId: null, itemName: null, itemPrice: null, quantity: 5 }]);
       });
   });
 
@@ -59,7 +62,7 @@ describe('03_separation-of-concerns-demo routes', () => {
     return request(app)
       .get('/api/v1/orders/2')
       .then(res => {
-        expect(res.body).toEqual({ id: '2', quantity: 5 });
+        expect(res.body).toEqual({ id: '2', itemId: null, itemName: null, itemPrice: null, quantity: 5 });
       });
   });
   it('updates the chosen order quantity', () => {
@@ -67,14 +70,14 @@ describe('03_separation-of-concerns-demo routes', () => {
       .put('/api/v1/orders/2')
       .send({ quantity: 50 })
       .then(res => {
-        expect(res.body).toEqual({ id: '2', quantity: 50 });
+        expect(res.body).toEqual({ id: '2', itemId: null, itemName: null, itemPrice: null, quantity: 50 });
       });
   });
   it('deletes the chosen order', () => {
     return request(app)
       .delete('/api/v1/orders/1')
       .then(res => {
-        expect(res.body).toEqual({ id: '1', quantity: 10 });
+        expect(res.body).toEqual({ id: '1', itemId: '5', itemName: 'star', itemPrice: 15,quantity: 10 });
       });
   });
 
