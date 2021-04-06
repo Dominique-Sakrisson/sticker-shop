@@ -9,6 +9,10 @@ jest.mock('twilio', () => () => ({
   }
 }));
 
+jest.mock('s3', () =>{
+
+})
+
 describe('03_separation-of-concerns-demo routes', () => {
   beforeAll(() => {
     return setup(pool);
@@ -32,6 +36,7 @@ describe('03_separation-of-concerns-demo routes', () => {
         });
       });
   });
+  
   it('ASYNC/AWAIT: creates a new order in our database and sends a text message', async() => {
     const res = await request(app)
       .post('/api/v1/orders')
