@@ -23,11 +23,12 @@ const ul = document.getElementById('products');
             quantity: data.get('quantity'),
         }),
       })
+
         .then((res) => res.json())
         .then(appendItem);
  });
 
- fetch('http://localhost:7890/api/v1/orders')
+ fetch('http://localhost:7890/api/v1/orders/')
     .then((res) => res.json())
     .then((items) => {
     items.forEach(appendItem);
